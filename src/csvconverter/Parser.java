@@ -32,12 +32,31 @@ public class Parser {
         }
     }
 
-    public void detectFileTypes() {
-
+    public String detectFileTypes(String a) {
+        String sub1 = a.substring(a.length() - 4);
+        String sub2 = "";
+        if (sub1.equals(".csv") || sub1.equals(".txt")) {
+            sub2 = a.substring(0, a.length() - 4);
+        } else {
+            //panic!!!
+        }
+        return sub2;
     }
 
-    public void makeArffFiles(String a) {
+    public BufferedWriter makeArffFiles(String a) {
+        String rel = detectFileTypes(a);
+        //maybe should make a string to store filepath?
+        BufferedWriter writer = null;
+        try {
+            FileWriter fileWriter = new FileWriter(rel + ".arff");
+            writer = new BufferedWriter(fileWriter);
+            writer.write("@RELATION rel");
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        return writer;
     }
 
     public String[] detectAttributeTypes(String[] b) {
@@ -49,7 +68,21 @@ public class Parser {
 
     }
 
-    public void addDataToArff(String file) {
+    public void addDataToArff(BufferedWriter w, BufferedReader r) {
+        String line = null;
+        try {
+            w.newLine();
+            w.write("@DATA ");
+            line = r.readLine();
+            while(line != null){
+                w.write(line);
+                line = r.readLine();
+            }
+            r.close();
+            w.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -92,7 +125,7 @@ public class Parser {
         }
 
     }
-}
+
 //final File folder = new File("/home/you/Desktop"); use File.separator
 //listFilesForFolder(folder);
 }
