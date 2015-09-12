@@ -59,6 +59,7 @@ public class Parser {
             writer.newLine();
             //get the relation info
             makeAttributes(reader, writer);
+            addDataToArff(writer, reader);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -110,7 +111,10 @@ public class Parser {
             attributeNames = r.readLine();
             //TODO: might need to "unread" the second line? or just use as data
             //get data from second line, which will give you the information for types
+            
+            r.mark(1000);
             attributeTypes = r.readLine();
+            r.reset();
 
             //constructs a pattern to split on commas (except when within "")
             Pattern attPattern = Pattern.compile(
@@ -199,10 +203,10 @@ public class Parser {
 
     }
 
-    public void converter() throws FileNotFoundException {
+    //public void converter() throws FileNotFoundException {
         //for (int i = 0; i < fileList.size(); i++) {
             //makeArffFiles(fileList.get(i));
-            makeArffFiles("C:\\Users\\Monica\\Documents\\GitHub\\CSVConverter\\src\\csvconverter\\transfusion.data.txt");
+            
             //TO DO: CHECK FOR BLANK LINE BETWEEN ATTRIBUTE NAME AND ATTRIBUTE TYPE
             //open and read the specified file    
            // try {
@@ -218,7 +222,7 @@ public class Parser {
 
        // }
 
-    }
+    //}
 
 //final File folder = new File("/home/you/Desktop"); use File.separator
 //listFilesForFolder(folder);
