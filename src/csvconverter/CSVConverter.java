@@ -19,8 +19,26 @@ public class CSVConverter {
      */
     public static void main(String[] args) throws FileNotFoundException {
         // TODO code application logic here
+        
+        //String os = System.getProperty("os.name");
+        String home = System.getProperty("user.home");
+        String filePath = home;
+        
+//        if(os.equalsIgnoreCase("")){ //Windows
+//            filePath += "\\ArffThisFolder";
+//        }else if(os.equalsIgnoreCase("")){ //Mac
+//            filePath += "";
+//        }else{//everything else
+//            filePath += "";
+//        }
+        
+        filePath += "\\ArffThisFolder\\transfusion.data.txt";
+        
         Parser p = new Parser();
-        p.converter();
+        p.makeArffFiles(filePath);
+        
+
+        
     }
     
 }

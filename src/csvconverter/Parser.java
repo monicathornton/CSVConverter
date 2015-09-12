@@ -18,7 +18,6 @@ import java.util.regex.*;
 public class Parser {
 
     ArrayList<String> fileList = new ArrayList<String>();
-  
 
     public Parser() {
 
@@ -50,8 +49,8 @@ public class Parser {
         //maybe should make a string to store filepath?
         BufferedWriter writer = null;
         BufferedReader reader;
-        reader = new BufferedReader(new FileReader(new File(rel)));
-        
+        reader = new BufferedReader(new FileReader(new File(a)));
+
         try {
             FileWriter fileWriter = new FileWriter(rel + ".arff");
             writer = new BufferedWriter(fileWriter);
@@ -60,7 +59,7 @@ public class Parser {
             //get the relation info
             makeAttributes(reader, writer);
             addDataToArff(writer, reader);
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,19 +104,19 @@ public class Parser {
     //gets all the attribute names from the csv file
     public void makeAttributes(BufferedReader r, BufferedWriter w) {
         String attributeNames, attributeTypes;
+        Pattern attPattern;
 
         try {
             //get first line, which gives you attribute names
             attributeNames = r.readLine();
-            //TODO: might need to "unread" the second line? or just use as data
+
             //get data from second line, which will give you the information for types
-            
             r.mark(1000);
             attributeTypes = r.readLine();
             r.reset();
 
             //constructs a pattern to split on commas (except when within "")
-            Pattern attPattern = Pattern.compile(
+            attPattern = Pattern.compile(
                     "(?x)          # enables free spacing (whitespace between tokens ignored)   \n"
                     + "(\"[^\"]*\")  # quoted data, where commas are treated differently (group1) \n"
                     + "|             # OR                                                         \n"
@@ -127,42 +126,40 @@ public class Parser {
             );
 
             Matcher matchedAttNames = attPattern.matcher(attributeNames);
-            String[] attNames = new String[matchedAttNames.groupCount()];
-            int index = 0;
+            String allMatched = "";
 
             while (matchedAttNames.find()) {
-                // get the match
                 String matched = matchedAttNames.group().trim();
-
-                // only put the match in the array if it in groups #1 or #2
                 if (matchedAttNames.group(1) != null || matchedAttNames.group(2) != null) {
-                    attNames[index] = matched;
-                    index++;
+                    allMatched += matched + "\n";
                 }
             }
+
+            //System.out.println(allMatched);
+            String attNames[] = allMatched.split("\\r?\\n");
+            //System.out.println(attNames.length);
 
             //have list of attribute names, need to figure out type
             Matcher matchedAttTypes = attPattern.matcher(attributeTypes);
-            String[] attTypes = new String[matchedAttTypes.groupCount()];
-
-            index = 0;
+            String matchedTypes = "";
 
             while (matchedAttTypes.find()) {
-                // get the match
                 String matched = matchedAttTypes.group().trim();
 
-                // only put the match in the array if it in groups #1 or #2
                 if (matchedAttTypes.group(1) != null || matchedAttTypes.group(2) != null) {
-                    attTypes[index] = matched;
-                    index++;
+                    matchedTypes += matched + "\n";
                 }
             }
-
+            
+            //System.out.println(matchedTypes);
+            String attTypes[] = matchedTypes.split("\\r?\\n");
+            //System.out.println(attTypes.length);
+                        
             //take the data from the second row, use it to determine types  
             attTypes = detectAttributeTypes(attTypes);
             //now have attribute names and types, write them out
             //form @ATTRIBUTE name datatype
-            addRelationToArff(w, attNames, attTypes);
+            addAttributeToArff(w, attNames, attTypes);
         } //end try
         catch (IOException e) {
             e.printStackTrace();
@@ -175,9 +172,11 @@ public class Parser {
         try {
             w.newLine();
             w.write("@DATA ");
+            w.newLine();
             line = r.readLine();
             while (line != null) {
                 w.write(line);
+                w.newLine();
                 line = r.readLine();
             }
             r.close();
@@ -188,14 +187,15 @@ public class Parser {
 
     }
 
-    public void addRelationToArff(BufferedWriter w, String[] attNames, String[] attTypes) {
+    public void addAttributeToArff(BufferedWriter w, String[] attNames, String[] attTypes) {
         String line = null;
         try {
             for (int i = 0; i < attNames.length; i++) {
                 w.newLine();
-                w.write("@RELATION ");
+                w.write("@ATTRIBUTE ");
                 w.write(" " + attNames[i] + " " + attTypes[i]);
             }
+            w.newLine();
             //w.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -203,26 +203,26 @@ public class Parser {
 
     }
 
-    //public void converter() throws FileNotFoundException {
-        //for (int i = 0; i < fileList.size(); i++) {
-            //makeArffFiles(fileList.get(i));
-            
+    public void converter(String path) throws FileNotFoundException {
+        listFilesForFolder(new File(path));
+
+        for (int i = 0; i < fileList.size(); i++) {
+            makeArffFiles(fileList.get(i));
+
             //TO DO: CHECK FOR BLANK LINE BETWEEN ATTRIBUTE NAME AND ATTRIBUTE TYPE
             //open and read the specified file    
-           // try {
-                //move this up?
-           //     BufferedReader bReader = new BufferedReader(new FileReader(new File(fileList.get(i))));
-                //gets list of attribute names
-           //     makeAttributes(bReader);
-                //put attribute before, then name, then type, then \n
+            // try {
+            //move this up?
+            //     BufferedReader bReader = new BufferedReader(new FileReader(new File(fileList.get(i))));
+            //gets list of attribute names
+            //     makeAttributes(bReader);
+            //put attribute before, then name, then type, then \n
+            // } catch (Exception e) {
+            //     System.out.println("There was an issue parsing the file.");
+            // }
+        }
 
-           // } catch (Exception e) {
-           //     System.out.println("There was an issue parsing the file.");
-           // }
-
-       // }
-
-    //}
+    }
 
 //final File folder = new File("/home/you/Desktop"); use File.separator
 //listFilesForFolder(folder);
