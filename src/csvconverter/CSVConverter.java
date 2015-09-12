@@ -5,6 +5,8 @@
  */
 package csvconverter;
 
+import java.io.FileNotFoundException;
+
 /**
  *
  * @author Janette
@@ -13,9 +15,12 @@ public class CSVConverter {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.FileNotFoundException
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         // TODO code application logic here
+        Parser p = new Parser();
+        p.converter();
     }
     
 }
