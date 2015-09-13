@@ -1,12 +1,14 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Soft Computing Project 1: Rollie Goodman, Janette Rounds, Monica Thornton
+ *
+ * A class to take care of parsing a file (with either 
+ * a .txt or a .csv extension) and building an .arff file for use in WEKA.
  */
 package csvconverter;
 
 //for reading in files
 import java.io.*;
+
 import java.util.ArrayList;
 //for constructing a regex for splitting attribute names
 import java.util.regex.*;
@@ -16,28 +18,45 @@ import java.util.regex.*;
  * @author Janette
  */
 public class Parser {
-
+    //for keeping an array of all files to be .arff'ed
     ArrayList<String> fileList = new ArrayList<String>();
 
-    public Parser() {
+//    public Parser() {
+//
+//    }
 
-    }
-
+    /*
+     * Method for getting a list of all the files in the user specified folder.
+     * Each valid file (i.e. not .arff files) is added to the array list of file
+     * names.
+     */
     public void listFilesForFolder(String path) {
         File[] files = new File(path).listFiles();
-
+        String fileName;
+        
+        //adds each valid file to the array list
         for (File file : files) {
             if (file.isFile()) {
-                System.out.println(file.getAbsolutePath());
-                fileList.add(file.getAbsolutePath());
-            }
-        }
+                fileName = file.toString();
+                //does not add .arff files, because those do not need to be parsed
+                if (!fileName.substring(fileName.length() - 4).equals("arff")) {
+                    fileList.add(file.getAbsolutePath());
+                } 
+            } //end ifs
+        } //end for
     }
 
+    /*
+     * Method for checking that all file types in the fileList to make sure files 
+     * are of valid type (which for this instance is .csv or .txt).
+     */
     public String detectFileTypes(String a) {
+        //gets the file extension
         String sub1 = a.substring(a.length() - 4);
         String sub2 = "";
+        //checks validity of file type
         if (sub1.equals(".csv") || sub1.equals(".txt")) {
+            //gets name for saving .arff file
             sub2 = a.substring(0, a.length() - 4);
         } else {
             //panic!!!
@@ -47,6 +66,9 @@ public class Parser {
 
     public BufferedWriter makeArffFiles(String a) throws FileNotFoundException {
         String rel = detectFileTypes(a);
+
+        System.out.println(rel);
+        
         //maybe should make a string to store filepath?
         BufferedWriter writer = null;
         BufferedReader reader;
@@ -54,11 +76,17 @@ public class Parser {
 
         try {
             FileWriter fileWriter = new FileWriter(rel + ".arff");
+            
+            //pares down to just necessary elements after file has been started
+            rel = rel.substring(rel.lastIndexOf("\\") + 1).trim();
             writer = new BufferedWriter(fileWriter);
+            //writes relation info in file
             writer.write("@RELATION " + rel);
             writer.newLine();
+            
             //get the relation info
             makeAttributes(reader, writer);
+            //adds data to file
             addDataToArff(writer, reader);
 
         } catch (IOException e) {
