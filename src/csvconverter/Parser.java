@@ -23,12 +23,13 @@ public class Parser {
 
     }
 
-    public void listFilesForFolder(final File folder) {
-        for (final File fileEntry : folder.listFiles()) {
-            if (fileEntry.isDirectory()) {
-                listFilesForFolder(fileEntry);
-            } else {
-                fileList.add(fileEntry.getName());
+    public void listFilesForFolder(String path) {
+        File[] files = new File(path).listFiles();
+
+        for (File file : files) {
+            if (file.isFile()) {
+                System.out.println(file.getAbsolutePath());
+                fileList.add(file.getAbsolutePath());
             }
         }
     }
@@ -149,16 +150,14 @@ public class Parser {
                 String matched = matchedAttTypes.group().trim();
 
                 if (matchedAttTypes.group(1) != null || matchedAttTypes.group(2) != null) {
-                    matchedTypes +=  matched + "\n";
+                    matchedTypes += matched + "\n";
                 }
             }
-            
-            
+
             //System.out.println(matchedTypes);
-            String attTypes[] = matchedTypes.split("\\r?\\n");  
+            String attTypes[] = matchedTypes.split("\\r?\\n");
 
             //System.out.println(attTypes.length);
-                        
             //take the data from the second row, use it to determine types  
             attTypes = detectAttributeTypes(attTypes);
             //now have attribute names and types, write them out
@@ -208,7 +207,7 @@ public class Parser {
     }
 
     public void converter(String path) throws FileNotFoundException {
-        listFilesForFolder(new File(path));
+        listFilesForFolder(path);
 
         for (int i = 0; i < fileList.size(); i++) {
             makeArffFiles(fileList.get(i));
