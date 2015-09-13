@@ -240,21 +240,7 @@ public class Parser {
         for (int i = 0; i < fileList.size(); i++) {
             makeArffFiles(fileList.get(i));
 
-            //TO DO: CHECK FOR BLANK LINE BETWEEN ATTRIBUTE NAME AND ATTRIBUTE TYPE
-            //open and read the specified file    
-            // try {
-            //move this up?
-            //     BufferedReader bReader = new BufferedReader(new FileReader(new File(fileList.get(i))));
-            //gets list of attribute names
-            //     makeAttributes(bReader);
-            //put attribute before, then name, then type, then \n
-            // } catch (Exception e) {
-            //     System.out.println("There was an issue parsing the file.");
-            // }
         }
 
     }
-
-//final File folder = new File("/home/you/Desktop"); use File.separator
-//listFilesForFolder(folder);
 }
