@@ -87,14 +87,16 @@ public class Parser {
             thisItem = attTypes[i];
             //checks if is positive or negative integer
             if (thisItem.matches(integerPattern) || thisItem.matches(realNumberPattern)) {
-                attTypes[i] = "numeric";
+                attTypes[i] = "NUMERIC";
             } else if (thisItem.matches(datePattern1) || thisItem.matches(datePattern2)) {
                 //checks if value is a date
-                attTypes[i] = "date";
+                attTypes[i] = "DATE";
             } else if (thisItem.matches(stringPattern)) {
-                attTypes[i] = "string";
+                attTypes[i] = "STRING";
             } else {
                 //nominal (list)
+                //TODO: fix this
+                attTypes[i] = "STRING";
             }
         }
         //returns the list of data, which now reflects the type of data
@@ -131,7 +133,7 @@ public class Parser {
             while (matchedAttNames.find()) {
                 String matched = matchedAttNames.group().trim();
                 if (matchedAttNames.group(1) != null || matchedAttNames.group(2) != null) {
-                    allMatched += matched + "\n";
+                    allMatched += "'" + matched + "' \n";
                 }
             }
 
@@ -147,12 +149,14 @@ public class Parser {
                 String matched = matchedAttTypes.group().trim();
 
                 if (matchedAttTypes.group(1) != null || matchedAttTypes.group(2) != null) {
-                    matchedTypes += matched + "\n";
+                    matchedTypes +=  matched + "\n";
                 }
             }
             
+            
             //System.out.println(matchedTypes);
-            String attTypes[] = matchedTypes.split("\\r?\\n");
+            String attTypes[] = matchedTypes.split("\\r?\\n");  
+
             //System.out.println(attTypes.length);
                         
             //take the data from the second row, use it to determine types  

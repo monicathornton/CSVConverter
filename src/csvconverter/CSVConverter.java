@@ -1,16 +1,13 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Soft Computing Project 1: Rollie Goodman, Janette Rounds, Monica Thornton
+ * A class to convert a comma seperated value file (with either a .txt
+ * .csv extension) to an .arff file for use in WEKA.  
  */
+
 package csvconverter;
 
 import java.io.FileNotFoundException;
 
-/**
- *
- * @author Janette
- */
 public class CSVConverter {
 
     /**
@@ -32,7 +29,7 @@ public class CSVConverter {
 //            filePath += "";
 //        }
         
-        filePath += "\\ArffThisFolder\\transfusion.data.txt";
+        filePath += "\\ArffThisFolder\\sonar.all-data.txt";
         
         Parser p = new Parser();
         p.makeArffFiles(filePath);
