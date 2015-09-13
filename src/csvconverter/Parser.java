@@ -92,7 +92,8 @@ public class Parser {
             } else if (relationName.contains("data_")) {
                 relationName = relationName.substring(5, relationName.length());
             }
-              
+            
+            //starts writing in the newly created file
             writer = new BufferedWriter(fileWriter);
 
             //writes relation info in file
@@ -109,7 +110,7 @@ public class Parser {
             //prints error in case of IO exception
             e.printStackTrace();
         }
-
+        
         return writer;
     }
 
@@ -149,27 +150,42 @@ public class Parser {
 
         //the last column in all of our datasets corresponds to the classifier
         attTypes[attTypes.length - 1] = " {";
-
+        
+        /*
+         * Builds a scanner for the purpose of getting all of the potential 
+         * class types
+         */
         Scanner classTypeScanner = new Scanner(new File(path));
 
-        //throw away the attribute names
+        /*
+         * Reads and throws away the attribute names, so one does not accidentally
+         * get considered as a class type. 
+         * NOTE: This behavior works for the tested datasets, but could be 
+         * problematic if a file does not contain
+         * attribute names, and the first line in the dataset corresponds to the
+         * only instance in that class.
+         */        
         String attributeNames = classTypeScanner.nextLine();
         String line = "";
+        
+        //a list to hold all unique classifier names
         ArrayList<String> classCats = new ArrayList<String>();;
-
+        
+        //goes through the entire file, checking for unique classifiers
         while (classTypeScanner.hasNextLine()) {
             line = classTypeScanner.nextLine();
             line = line.substring(line.lastIndexOf(",") + 1).trim();
 
             if (classCats.contains(line)) {
-                //do nothing
+                //do nothing, is already in list
             } else {
                 classCats.add(line);
             }
         }
 
-        //moves through every entry in the list of categories
+        //iterator to move through every entry in the list of categories
         Iterator<String> iterator = classCats.iterator();
+        //String to hold all unique values
         String allCats = "";
 
         while (iterator.hasNext()) {
@@ -177,7 +193,7 @@ public class Parser {
             allCats += iterator.next() + ",";
         }
 
-        //trim last comma
+        //trim last comma, as it is unnecessary
         while ((allCats.charAt(allCats.length() - 1)) == ',') {
             allCats = allCats.substring(0, allCats.length() - 1);
         }
@@ -199,10 +215,23 @@ public class Parser {
 
         //for discerning where to split the above strings
         Pattern attPattern;
-
+        
+        //value to reflect whether or not attribute names are present in data
         Boolean noAttNames = false;
 
         try {
+
+            /*
+             * Here we are going to read the first line of the data, which may
+             * or may not be the attribute names. Because we do not know this in
+             * advance, we are going to mark the first line, and use the first
+             * character to make our determination. We will only call reset if 
+             * the data does not already have attribute names.
+             * NOTE: this is a solution that works for this dataset, but if a 
+             * dataset has an attribute name that begins with a number, another
+             * solution would need to be implemented.
+             */
+            
             //get first line, which gives you attribute names
             r.mark(10000);
             attributeNames = r.readLine();
@@ -218,12 +247,17 @@ public class Parser {
             );
 
             if (attributeNames.substring(0, 1).matches("-?\\s?\\d*")) {
+                /*
+                 * As none of the attribute names in our dataset start with a 
+                 * number, if the first character is a number we know that the
+                 * file does not contain any attribute names.
+                 */                
                 noAttNames = true;
 
-                //get the number of attributes
+                //array holding attribute names (will be rewritten shortly)
                 attNames = attributeNames.split(",", -1);
 
-                //name attributes                
+                //construct name attributes                
                 for (int i = 0; i < attNames.length; i++) {
                     attNames[i] = "'A" + i + "'";
                 }
