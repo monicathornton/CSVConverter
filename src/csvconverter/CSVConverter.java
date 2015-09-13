@@ -4,6 +4,24 @@
  * A class to drive the conversion of a comma seperated value file (with either 
  * a .txt or a .csv extension) to an .arff file for use in WEKA. File locations
  * are specified here, so user can control which datasets to use.
+ *
+ * The datasets we used for this project (and hence, the ones this converter
+ * is suited for) are as follows:
+ * 1. Iris Database (http://archive.ics.uci.edu/ml/datasets/Iris)
+ * 2. Banknote Authentication Data Set (http://archive.ics.uci.edu/ml/datasets/banknote+authentication)
+ * 3. Fertility Data Set (http://archive.ics.uci.edu/ml/datasets/Fertility)
+ * 4. Glass Identification Data Set (http://archive.ics.uci.edu/ml/datasets/Glass+Identification) 
+ * 5. Haberman's Survival Data Set (https://archive.ics.uci.edu/ml/datasets/Haberman's+Survival) 
+ * 6. Hill-Valley Data Set (http://archive.ics.uci.edu/ml/datasets/Hill-Valley)
+ * 7. Ionosphere Data Set (http://archive.ics.uci.edu/ml/datasets/Ionosphere)
+ * 8. MAGIC Gamma Telescope Data Set (http://archive.ics.uci.edu/ml/datasets/MAGIC+Gamma+Telescope)
+ * 9. Libras Movement Data Set (http://archive.ics.uci.edu/ml/datasets/Libras+Movement)
+ * 10. Connectionist Bench (Sonar, Mines vs. Rocks) Data Set (http://archive.ics.uci.edu/ml/datasets/Connectionist+Bench+%28Sonar%2C+Mines+vs.+Rocks%29)
+ * 11. Blood Transfusion Service Center Data Set (https://archive.ics.uci.edu/ml/datasets/Blood+Transfusion+Service+Center)
+ *
+ * User can test on any of these datasets, and it is recommended that they are 
+ * stored at their user.home location (that way the file chooser will go to the
+ * correct place). 
  */
 package csvconverter;
 
