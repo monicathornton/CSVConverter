@@ -42,10 +42,10 @@ public class CSVConverter {
         }
 
         filePath = callFileChooser(filePath);
-        System.out.println(filePath);
+        filePath += File.separator;
 
-        //Parser parser = new Parser();
-        //parser.converter(filePath);
+        Parser parser = new Parser();
+        parser.converter(filePath);
     }
 
     public static String callFileChooser(String filePath) {
@@ -57,29 +57,19 @@ public class CSVConverter {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JButton button = new JButton("Select Folder");
-        button.addActionListener(new ActionListener() {
-            
-            public void actionPerformed(ActionEvent ae) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(new File(filePath));
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-                int returnValue = fileChooser.showOpenDialog(null);
 
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    String thisPath = selectedFile.getAbsolutePath();
-                    
-                } 
-             }
-        });
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(filePath));
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        int returnValue = fileChooser.showOpenDialog(null);
 
-        frame.add(button);
-        frame.pack();
-        frame.setVisible(true);
-        
-
-        System.out.print("Your path" + thisPath);
-
-        return thisPath;
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            thisPath = selectedFile.getAbsolutePath();
+            return thisPath;
+        } else {
+            return null;
+        }
     }
+
 }
