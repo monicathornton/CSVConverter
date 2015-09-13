@@ -84,15 +84,15 @@ public class Parser {
 
             //pares down to just necessary elements after file has been started
             String relationName = rel.substring(rel.lastIndexOf("\\") + 1).trim();
-            
+
             if (relationName.contains(".data")) {
                 relationName = relationName.substring(0, relationName.length() - 5);
             } else if (relationName.contains("-data")) {
-                relationName = relationName.substring(0, relationName.length() - 5);                
+                relationName = relationName.substring(0, relationName.length() - 5);
             } else if (relationName.contains("data_")) {
                 relationName = relationName.substring(5, relationName.length());
             }
-            
+
             //starts writing in the newly created file
             writer = new BufferedWriter(fileWriter);
 
@@ -110,7 +110,7 @@ public class Parser {
             //prints error in case of IO exception
             e.printStackTrace();
         }
-        
+
         return writer;
     }
 
@@ -150,7 +150,7 @@ public class Parser {
 
         //the last column in all of our datasets corresponds to the classifier
         attTypes[attTypes.length - 1] = " {";
-        
+
         /*
          * Builds a scanner for the purpose of getting all of the potential 
          * class types
@@ -164,13 +164,13 @@ public class Parser {
          * problematic if a file does not contain
          * attribute names, and the first line in the dataset corresponds to the
          * only instance in that class.
-         */        
+         */
         String attributeNames = classTypeScanner.nextLine();
         String line = "";
-        
+
         //a list to hold all unique classifier names
         ArrayList<String> classCats = new ArrayList<String>();;
-        
+
         //goes through the entire file, checking for unique classifiers
         while (classTypeScanner.hasNextLine()) {
             line = classTypeScanner.nextLine();
@@ -182,6 +182,8 @@ public class Parser {
                 classCats.add(line);
             }
         }
+
+        classTypeScanner.close();
 
         //iterator to move through every entry in the list of categories
         Iterator<String> iterator = classCats.iterator();
@@ -215,7 +217,7 @@ public class Parser {
 
         //for discerning where to split the above strings
         Pattern attPattern;
-        
+
         //value to reflect whether or not attribute names are present in data
         Boolean noAttNames = false;
 
@@ -231,7 +233,6 @@ public class Parser {
              * dataset has an attribute name that begins with a number, another
              * solution would need to be implemented.
              */
-            
             //get first line, which gives you attribute names
             r.mark(10000);
             attributeNames = r.readLine();
@@ -251,7 +252,7 @@ public class Parser {
                  * As none of the attribute names in our dataset start with a 
                  * number, if the first character is a number we know that the
                  * file does not contain any attribute names.
-                 */                
+                 */
                 noAttNames = true;
 
                 //array holding attribute names (will be rewritten shortly)
@@ -268,14 +269,14 @@ public class Parser {
 
                 Matcher matchedAttNames = attPattern.matcher(attributeNames);
                 String allMatched = "";
-                
+
                 //generates a string of all matches, to store in attNames array
                 while (matchedAttNames.find()) {
                     String matched = matchedAttNames.group().trim();
                     if (matchedAttNames.group(1) != null || matchedAttNames.group(2) != null) {
-                       //checks if begins in double quotes, if so replaces
-                       //per WEKA documentation, anything with spaces should go  
-                       //between single quotes
+                        //checks if begins in double quotes, if so replaces
+                        //per WEKA documentation, anything with spaces should go  
+                        //between single quotes
                         if (matched.charAt(0) != '"') {
                             allMatched += "'" + matched + "' \n";
                         } else {
@@ -325,6 +326,9 @@ public class Parser {
 
     }
 
+    /*
+     * Method to add the data values to the ARFF file.
+     */
     public void addDataToArff(BufferedWriter w, BufferedReader r) {
         String line = null;
         try {
@@ -345,6 +349,9 @@ public class Parser {
 
     }
 
+    /*
+     * Method to add the attributes (name and type) to the data file.
+     */
     public void addAttributeToArff(BufferedWriter w, String[] attNames, String[] attTypes) {
         String line = null;
         try {
@@ -354,20 +361,21 @@ public class Parser {
                 w.write(" " + attNames[i] + " " + attTypes[i]);
             }
             w.newLine();
-            //w.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
+    /*
+     * Method that calls the methods to get the list of files for the selected
+     * folder, and to construct the arff files.
+     */
     public void converter(String path) throws FileNotFoundException {
         listFilesForFolder(path);
 
         for (int i = 0; i < fileList.size(); i++) {
             makeArffFiles(fileList.get(i));
-
         }
-
     }
 }
